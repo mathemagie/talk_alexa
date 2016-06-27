@@ -67,6 +67,10 @@ HelloWorld.prototype.eventHandlers.onSessionEnded = function (sessionEndedReques
 
 HelloWorld.prototype.intentHandlers = {
     // register custom intent handlers
+    "ErrandIntent": function (intent, session, response) {
+        response.tell("Would you like me to look after your house while you're away?");
+     },
+
     "ActivateSecurityIntent": function (intent, session, response) {
         //response.ask("Your security system will switch to out of home and the presence simulation will be activated. I'll protect your home", "Greeter", "Hello World!");
         var sessionAttributes = session.attributes;
@@ -80,7 +84,7 @@ HelloWorld.prototype.intentHandlers = {
               var reprompt = '';
         }
          if(sessionAttributes.index == 2){
-            response.tell("good bye");
+            response.tell("Enjoy your errands!");
         }
 
         sessionAttributes.index = sessionAttributes.index + 1;
@@ -116,11 +120,15 @@ HelloWorld.prototype.intentHandlers = {
     },
 
     "DeactivateSecurityIntent": function (intent, session, response) {
-        response.tell("Welcome Home");
+        response.tell("Welcome Home!");
+     },
+
+    "YesIntent": function (intent, session, response) {
+        ActivateSecurityIntent(intent, session, response);
      },
 
     "AMAZON.HelpIntent": function (intent, session, response) {
-        response.ask("help text, Your security system will switch to out of home and the presence simulation will be activated. I'll protect your home", "You can say hello to me!");
+        response.ask("Talk to AXA is here to help you, I can for example protect your home when you are away or tell you if your items are covered.", "How can I help you?");
     }
 };
 
