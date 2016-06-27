@@ -70,7 +70,7 @@ Talk2MyHand.prototype.eventHandlers.onSessionEnded = function (sessionEndedReque
 Talk2MyHand.prototype.intentHandlers = {
     // register custom intent handlers
     "ErrandIntent": function (intent, session, response) {
-        response.ask("Would you like me to look after your house while you're away?","");
+        response.ask('Would you like me to look after your house while you\'re away?','');
      },
 
     "ActivateSecurityIntent": function (intent, session, response) {
@@ -83,11 +83,11 @@ Talk2MyHand.prototype.intentHandlers = {
         }
         if(sessionAttributes.indexSecurity == 1){
             // TODO: Switch on presence simulation
-              var text = 'The presence simulation is set up. I\'ll protect your home while your away. ';
+              var text = 'The presence simulation is set up. I\'ll protect your home while you\'re away. ';
               var reprompt = '';
         }
          if(sessionAttributes.indexSecurity == 2){
-            response.tell("Enjoy your errands!");
+            response.tell('Enjoy your errands!');
         }
 
         sessionAttributes.indexSecurity = sessionAttributes.indexSecurity + 1;
@@ -112,7 +112,8 @@ Talk2MyHand.prototype.intentHandlers = {
               var reprompt = '';
         }
         if(sessionAttributes.indexCoverage == 2){
-              var text = 'The option costs 5 additional euros per year, and it will also increase the coverage of your TV and your iPhone';
+            if (sessionAttributes.device == "iPhone") var text = 'The option costs 5 additional euros per year, and it will also increase the coverage of your TV and your iPad';
+            else var text = 'The option costs 5 additional euros per year, and it will also increase the coverage of your TV and your iPhone';
               var reprompt = '';
         }
         if(sessionAttributes.indexCoverage == 3){
@@ -177,10 +178,6 @@ Talk2MyHand.prototype.intentHandlers = {
     "DeactivateSecurityIntent": function (intent, session, response) {
         // TODO: Switch off presence simulation
         response.tell("Welcome Home!");
-     },
-
-    "YesIntent": function (intent, session, response) {
-        ActivateSecurityIntent(intent, session, response);
      },
 
     "StopIntent": function (intent, session, response) {
