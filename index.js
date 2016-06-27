@@ -137,6 +137,10 @@ Talk2MyHand.prototype.intentHandlers = {
         ActivateSecurityIntent(intent, session, response);
      },
 
+    "StopIntent": function (intent, session, response) {
+        response.tell("That was my pleasure.");
+     },
+
     "AMAZON.HelpIntent": function (intent, session, response) {
         response.ask("Talk to Axe is here to help you, I can for example protect your home when you are away or tell you if your items are covered.", "How can I help you?");
     }
