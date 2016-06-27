@@ -318,8 +318,7 @@ function callPhilipsAPI(apiCall, callBody, philipsCallback) {
     
 
         //another chunk of data has been recieved, so append it to `str`
-        response.on('data', function(chunk) {
-            
+        response.on('data', function(chunk) { 
             str += chunk;
         });
 
@@ -327,14 +326,14 @@ function callPhilipsAPI(apiCall, callBody, philipsCallback) {
         response.on('end', function() {
             console.log("response received");
             console.log(str);
-            callback(null);
+            philipsCallback(null);
             
         });
         
         response.on('error', function(err) {
             // This prints the error message and stack trace to `stderr`.
             console.error(err.stack);
-            callback(err);
+            philipsCallback(err);
         });
     };
    
@@ -343,7 +342,7 @@ function callPhilipsAPI(apiCall, callBody, philipsCallback) {
         https.request(apiCall, callback).end(body);
     }
     else {
-        https.request(apiCall, callback);
+        https.request(apiCall, callback).end();
     }
     
 }
