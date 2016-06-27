@@ -148,4 +148,3 @@ exports.handler = function (event, context) {
     var talk2MyHand = new Talk2MyHand();
     talk2MyHand.execute(event, context);
 };
-
