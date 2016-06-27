@@ -47,6 +47,7 @@ HelloWorld.prototype.eventHandlers.onSessionStarted = function (sessionStartedRe
         + ", sessionId: " + session.sessionId);
     var sessionAttributes = {};
    sessionAttributes.index = 0;
+    sessionAttributes.indexs = 0;
    session.attributes = sessionAttributes;
     // any initialization logic goes here
 };
@@ -71,12 +72,12 @@ HelloWorld.prototype.intentHandlers = {
         var sessionAttributes = session.attributes;
         console.log("index id dans intent =>" + sessionAttributes.index);
          if(sessionAttributes.index == 0){
-            var text = 'first question please ? ';
-              var reprompt = 'coucou';
+            var text = 'Your security system will switch to Out Mode in 2 min, do you also want to activate the presence simulation ?';
+            var reprompt = '';
         }
         if(sessionAttributes.index == 1){
-              var text = 'second question please ? ';
-              var reprompt = 'coucou';
+              var text = 'The presence simulation is set up. I\'ll protect your home while your away. ';
+              var reprompt = '';
         }
          if(sessionAttributes.index == 2){
             response.tell("good bye");
@@ -89,6 +90,35 @@ HelloWorld.prototype.intentHandlers = {
 
 
     },
+
+ "DeviceCoverageIntent": function (intent, session, response) {
+        //response.ask("Your security system will switch to out of home and the presence simulation will be activated. I'll protect your home", "Greeter", "Hello World!");
+        var sessionAttributes = session.attributes;
+        console.log("index id dans intent =>" + sessionAttributes.indexs);
+         if(sessionAttributes.indexs == 0){
+            var text = 'Your ipad is covered by your home insurance against fire, water, theft and burglary but only at a discounted value. There is an option to cover it at replacement value';
+            var reprompt = '';
+        }
+        if(sessionAttributes.indexs == 1){
+              var text = 'Discounted value takes into account the usage of your iPad and thus that it will be worth less every year. Replacement value means that you will be reimbursed exactly what you would need to be a brand new replacement';
+              var reprompt = '';
+        }
+         if(sessionAttributes.indexs == 2){
+            response.tell("good bye DeviceCoverage");
+        }
+
+        sessionAttributes.indexs = sessionAttributes.indexs + 1;
+        session.attributes = sessionAttributes;
+
+        response.ask(text, reprompt);
+
+
+    },
+
+    "DeactivateSecurityIntent": function (intent, session, response) {
+        response.tell("Welcome Home");
+     },
+
     "AMAZON.HelpIntent": function (intent, session, response) {
         response.ask("help text, Your security system will switch to out of home and the presence simulation will be activated. I'll protect your home", "You can say hello to me!");
     }
