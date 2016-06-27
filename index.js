@@ -54,8 +54,8 @@ Talk2MyHand.prototype.eventHandlers.onSessionStarted = function (sessionStartedR
 
 Talk2MyHand.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
     console.log("Talk2MyHand onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
-    var speechOutput = "launch text";
-    var repromptText = "";
+    var speechOutput = "Hello, What can I do for you?";
+    var repromptText = "Is there any way I can help you?";
     response.ask(speechOutput, repromptText);
 };
 
@@ -68,7 +68,7 @@ Talk2MyHand.prototype.eventHandlers.onSessionEnded = function (sessionEndedReque
 Talk2MyHand.prototype.intentHandlers = {
     // register custom intent handlers
     "ErrandIntent": function (intent, session, response) {
-        response.tell("Would you like me to look after your house while you're away?");
+        response.ask("Would you like me to look after your house while you're away?","");
      },
 
     "ActivateSecurityIntent": function (intent, session, response) {
