@@ -46,8 +46,8 @@ Talk2MyHand.prototype.eventHandlers.onSessionStarted = function (sessionStartedR
     console.log("Talk2MyHand onSessionStarted requestId: " + sessionStartedRequest.requestId
         + ", sessionId: " + session.sessionId);
     var sessionAttributes = {};
-   sessionAttributes.index = 0;
-    sessionAttributes.indexs = 0;
+   sessionAttributes.indexCoverage = 0;
+    sessionAttributes.indexSecurity = 0;
    session.attributes = sessionAttributes;
     // any initialization logic goes here
 };
