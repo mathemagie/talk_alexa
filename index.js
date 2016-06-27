@@ -36,7 +36,7 @@ var https = require('https');
  
 var bridge = "001788fffe27815f";
  
- var requestData = {
+var requestData = {
       on: true,
       effect: "none"
 };
@@ -121,8 +121,8 @@ Talk2MyHand.prototype.intentHandlers = {
         var sessionAttributes = session.attributes;
         console.log("index id dans intent =>" + sessionAttributes.indexSecurity);
          if(sessionAttributes.indexSecurity == 0){
-            var text = 'I\'m activating your security system, do you also want to activate the presence simulation ?';
-            var reprompt = '';
+            switchOnAlarm(sessionAttributes, session, response);
+            return;
         }
         if(sessionAttributes.indexSecurity == 1){
             // TODO: Switch on presence simulation
@@ -310,6 +310,37 @@ function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, sp
 
     callPhilipsAPI(optionsArray[lightIndex], requestData, philipsCallback);
 
+}
+
+function switchOnAlarm(sessionAttributes, session, alexaResponse) {
+    var option = {
+        host: 'api.meethue.com',
+        path: '/v1/bridges/'+bridge+'/lights/1/state',
+        method: 'PUT',
+        headers: headers
+    }
+
+    var requestBody = {
+      hue: 46920,
+      transitiontime: 30
+    };
+
+    var callPhilipsAPI = function(response) {
+        if ( error ) {
+            console.error(err.stack);
+            alexaResponse.tell("Sorry, I couldn't complete the requested action");
+        }
+        else {
+            var text = 'I\'m activating your security system, do you also want to activate the presence simulation ?';
+            var reprompt = '';
+            sessionAttributes.indexSecurity = sessionAttributes.indexSecurity + 1;
+            session.attributes = sessionAttributes;
+
+            alexaResponse.ask(text, reprompt);
+        }
+    };
+
+    callPhilipsAPI(option, request, philipsCallback);
 }
 
 function callPhilipsAPI(apiCall, callBody, philipsCallback) {
