@@ -51,7 +51,7 @@ HelloWorld.prototype.eventHandlers.onSessionStarted = function (sessionStartedRe
 HelloWorld.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
     console.log("HelloWorld onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
     var speechOutput = "Your security system will switch to out of home and the presence simulation will be activated. Rest easy, I'll protect your home.";
-    var repromptText = "";
+    var repromptText = "repromptText";
     response.ask(speechOutput, repromptText);
 };
 
