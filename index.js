@@ -28,6 +28,49 @@ var APP_ID = "amzn1.echo-sdk-ams.app.255b2ec3-7ff5-452a-9a15-ffec0b3c2cfb"; //re
  */
 var AlexaSkill = require('./AlexaSkill');
 
+
+/**
+ * Philips for variable integration
+*/
+var https = require('https');
+ 
+var bridge = "001788fffe27815f";
+ 
+ var requestData = {
+      on: true,
+      effect: "none"
+};
+
+var headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer dbx7Jm9cWYyuHEV6c597dfdowYXd'
+};
+
+
+var optionsLivingRoom = {
+    host: 'api.meethue.com',
+    path: '/v1/bridges/'+bridge+'/lights/2/state',
+    method: 'PUT',
+    headers: headers
+};
+
+var optionsBedroom = {
+    host: 'api.meethue.com',
+    path: '/v1/bridges/'+bridge+'/lights/1/state',
+    method: 'PUT',
+    headers: headers
+};
+
+var optionsKitchen = {
+    host: 'api.meethue.com',
+    path: '/v1/bridges/'+bridge+'/lights/3/state',
+    method: 'PUT',
+    headers: headers
+};
+
+var lights = ["living room light", "bedroom light", "kitchen light"];
+var optionsArray = [optionsLivingRoom, optionsBedroom, optionsKitchen];
+
 /**
  * Talk2MyHand is a child of AlexaSkill.
  * To read more about inheritance in JavaScript, see the link below.
@@ -181,6 +224,14 @@ Talk2MyHand.prototype.intentHandlers = {
         ActivateSecurityIntent(intent, session, response);
      },
 
+     "TurnOn": function(intent, session, response) {
+        setLightToTurnOn(intent, session, callback);
+    },
+
+    "TurnOff": function(intent, session, response) {
+        setLightToTurnOff(intent, session, callback);
+     },
+
     "StopIntent": function (intent, session, response) {
         response.tell("That was my pleasure.");
      },
@@ -189,6 +240,115 @@ Talk2MyHand.prototype.intentHandlers = {
         response.ask("Talk to Axe is here to help you, I can for example protect your home when you are away or tell you if your items are covered.", "How can I help you?");
     }
 };
+
+function setLightToTurnOn(intent, session, callback) {
+    var cardTitle = intent.name;
+    var lightToTurnOn = intent.slots.Light.value;
+    var repromptText = "";
+    var sessionAttributes = {};
+    var shouldEndSession = false;
+    var speechOutput = "";
+    
+    var lightIndex = lights.indexOf(lightToTurnOn.toLowerCase());
+    
+    console.log("light to turn on: " + lightToTurnOn);
+    console.log("lightIndex: " + lightIndex);
+    
+    if ( lightIndex < 0 ) {
+        speechOutput = "Sorry, I didn't understand";
+        repromptText = "Could you please repeat?";
+        callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+    }
+    else {
+        speechOutput = "Ok, I'm turning on the " + lightToTurnOn;
+        repromptText = "Do you want me to control another light?";
+        sendCommandToLight(true, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, callback);
+    }
+    
+}
+
+function setLightToTurnOff(intent, session, callback) {
+    var cardTitle = intent.name;
+    var lightToTurnOff = intent.slots.Light.value;
+    var repromptText = "";
+    var sessionAttributes = {};
+    var shouldEndSession = false;
+    var speechOutput = "";
+    
+     var lightIndex = lights.indexOf(lightToTurnOff.toLowerCase());
+    
+    console.log("light to turn off: " + lightToTurnOff);
+    console.log("lightIndex: " + lightIndex);
+    
+    if ( lightIndex < 0 ) {
+        speechOutput = "Sorry, I didn't understand";
+        repromptText = "Could you please repeat?";
+        callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+    }
+    else {
+        speechOutput = "Ok, I'm turning off the " + lightToTurnOff;
+        repromptText = "Do you want me to control another light?";
+        sendCommandToLight(false, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, callback);
+    } 
+}
+
+function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, callbackFunc) {
+
+    console.log('sendCommandToLight');
+    requestData.on = turnOn;
+    
+    var callback = function(response) {
+        var str = '';
+        
+        console.log("********************");
+
+        //another chunk of data has been recieved, so append it to `str`
+        response.on('data', function(chunk) {
+            
+            str += chunk;
+        });
+
+        //the whole response has been recieved, so we just print it out here
+        response.on('end', function() {
+            console.log("response received");
+            console.log(str);
+            callbackFunc(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+        });
+        
+        response.on('error', function(err) {
+            // This prints the error message and stack trace to `stderr`.
+            console.error(err.stack);
+        });
+    };
+   
+    var body = JSON.stringify(requestData);
+    console.log("Options: " + JSON.stringify(optionsArray[lightIndex]));
+    https.request(optionsArray[lightIndex], callback).end(body);
+
+}
+
+// --------------- Helpers that build all of the responses -----------------------
+
+function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
+    return {
+        outputSpeech: {
+            type: "PlainText",
+            text: output
+        },
+        card: {
+            type: "Simple",
+            title: "SessionSpeechlet - " + title,
+            content: "SessionSpeechlet - " + output
+        },
+        reprompt: {
+            outputSpeech: {
+                type: "PlainText",
+                text: repromptText
+            }
+        },
+        shouldEndSession: shouldEndSession
+    };
+}
 
 // Create the handler that responds to the Alexa Request.
 exports.handler = function (event, context) {
