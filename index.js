@@ -45,12 +45,15 @@ HelloWorld.prototype.constructor = HelloWorld;
 HelloWorld.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
     console.log("HelloWorld onSessionStarted requestId: " + sessionStartedRequest.requestId
         + ", sessionId: " + session.sessionId);
+    var sessionAttributes = {};
+   sessionAttributes.index = 0;
+   session.attributes = sessionAttributes;
     // any initialization logic goes here
 };
 
 HelloWorld.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
     console.log("HelloWorld onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
-    var speechOutput = "Your security system will switch to out of home and the presence simulation will be activated. Rest easy, I'll protect your home.";
+    var speechOutput = "launch text";
     var repromptText = "";
     response.ask(speechOutput, repromptText);
 };
@@ -64,10 +67,30 @@ HelloWorld.prototype.eventHandlers.onSessionEnded = function (sessionEndedReques
 HelloWorld.prototype.intentHandlers = {
     // register custom intent handlers
     "ActivateSecurityIntent": function (intent, session, response) {
-        response.tell("Your security system will switch to out of home and the presence simulation will be activated. I'll protect your home", "Greeter", "Hello World!");
+        //response.ask("Your security system will switch to out of home and the presence simulation will be activated. I'll protect your home", "Greeter", "Hello World!");
+        var sessionAttributes = session.attributes;
+        console.log("index id dans intent =>" + sessionAttributes.index);
+         if(sessionAttributes.index == 0){
+            var text = 'first question please ? ';
+              var reprompt = 'coucou';
+        }
+        if(sessionAttributes.index == 1){
+              var text = 'second question please ? ';
+              var reprompt = 'coucou';
+        }
+         if(sessionAttributes.index == 2){
+            response.tell("good bye");
+        }
+
+        sessionAttributes.index = sessionAttributes.index + 1;
+        session.attributes = sessionAttributes;
+
+        response.ask(text, reprompt);
+
+
     },
     "AMAZON.HelpIntent": function (intent, session, response) {
-        response.ask("Your security system will switch to out of home and the presence simulation will be activated. I'll protect your home", "You can say hello to me!");
+        response.ask("help text, Your security system will switch to out of home and the presence simulation will be activated. I'll protect your home", "You can say hello to me!");
     }
 };
 
