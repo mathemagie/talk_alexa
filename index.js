@@ -292,7 +292,27 @@ function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, sp
 
     console.log('sendCommandToLight');
     requestData.on = turnOn;
-    
+
+    var philipsCallback = function(error) {
+        if ( error ) {
+            console.error(err.stack);
+            alexaResponse.tell("Sorry, I couldn't complete the requested action");
+        }
+        else {
+            if ( turnOn ) {
+                alexaResponse.tell("Sure, I'm turning on the light of the "+lights[lightIndex]);
+            }
+            else {
+                alexaResponse.tell("Roger, I'm turning it off");
+            }
+        }
+    }
+
+    callPhilipsAPI(optionsArray[lightIndex], requestData, philipsCallback);
+
+}
+
+function callPhilipsAPI(apiCall, callBody, philipsCallback) {
     var callback = function(response) {
         var str = '';
     
@@ -307,25 +327,25 @@ function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, sp
         response.on('end', function() {
             console.log("response received");
             console.log(str);
-            if ( turnOn ) {
-                alexaResponse.tell("Sure, I'm turning on the light of the "+lights[lightIndex]);
-            }
-            else {
-                alexaResponse.tell("Roger, I'm turning it off");
-            }
+            callback(null);
             
         });
         
         response.on('error', function(err) {
             // This prints the error message and stack trace to `stderr`.
             console.error(err.stack);
+            callback(err);
         });
     };
    
-    var body = JSON.stringify(requestData);
-    console.log("Options: " + JSON.stringify(optionsArray[lightIndex]));
-    https.request(optionsArray[lightIndex], callback).end(body);
-
+    if ( callBody ) {
+        var body = JSON.stringify(callBody);
+        https.request(apiCall, callback).end(body);
+    }
+    else {
+        https.request(apiCall, callback);
+    }
+    
 }
 
 // Create the handler that responds to the Alexa Request.
