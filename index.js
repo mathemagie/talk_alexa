@@ -29,21 +29,21 @@ var APP_ID = "amzn1.echo-sdk-ams.app.255b2ec3-7ff5-452a-9a15-ffec0b3c2cfb"; //re
 var AlexaSkill = require('./AlexaSkill');
 
 /**
- * HelloWorld is a child of AlexaSkill.
+ * Talk2MyHand is a child of AlexaSkill.
  * To read more about inheritance in JavaScript, see the link below.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript#Inheritance
  */
-var HelloWorld = function () {
+var Talk2MyHand = function () {
     AlexaSkill.call(this, APP_ID);
 };
 
 // Extend AlexaSkill
-HelloWorld.prototype = Object.create(AlexaSkill.prototype);
-HelloWorld.prototype.constructor = HelloWorld;
+Talk2MyHand.prototype = Object.create(AlexaSkill.prototype);
+Talk2MyHand.prototype.constructor = Talk2MyHand;
 
-HelloWorld.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
-    console.log("HelloWorld onSessionStarted requestId: " + sessionStartedRequest.requestId
+Talk2MyHand.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
+    console.log("Talk2MyHand onSessionStarted requestId: " + sessionStartedRequest.requestId
         + ", sessionId: " + session.sessionId);
     var sessionAttributes = {};
    sessionAttributes.index = 0;
@@ -52,20 +52,20 @@ HelloWorld.prototype.eventHandlers.onSessionStarted = function (sessionStartedRe
     // any initialization logic goes here
 };
 
-HelloWorld.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
-    console.log("HelloWorld onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
+Talk2MyHand.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
+    console.log("Talk2MyHand onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
     var speechOutput = "launch text";
     var repromptText = "";
     response.ask(speechOutput, repromptText);
 };
 
-HelloWorld.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
-    console.log("HelloWorld onSessionEnded requestId: " + sessionEndedRequest.requestId
+Talk2MyHand.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
+    console.log("Talk2MyHand onSessionEnded requestId: " + sessionEndedRequest.requestId
         + ", sessionId: " + session.sessionId);
     // any cleanup logic goes here
 };
 
-HelloWorld.prototype.intentHandlers = {
+Talk2MyHand.prototype.intentHandlers = {
     // register custom intent handlers
     "ErrandIntent": function (intent, session, response) {
         response.tell("Would you like me to look after your house while you're away?");
@@ -74,20 +74,21 @@ HelloWorld.prototype.intentHandlers = {
     "ActivateSecurityIntent": function (intent, session, response) {
         //response.ask("Your security system will switch to out of home and the presence simulation will be activated. I'll protect your home", "Greeter", "Hello World!");
         var sessionAttributes = session.attributes;
-        console.log("index id dans intent =>" + sessionAttributes.index);
-         if(sessionAttributes.index == 0){
+        console.log("index id dans intent =>" + sessionAttributes.indexSecurity);
+         if(sessionAttributes.indexSecurity == 0){
             var text = 'Your security system will switch to Out Mode in 2 min, do you also want to activate the presence simulation ?';
             var reprompt = '';
         }
-        if(sessionAttributes.index == 1){
+        if(sessionAttributes.indexSecurity == 1){
+            // TODO: Switch on presence simulation
               var text = 'The presence simulation is set up. I\'ll protect your home while your away. ';
               var reprompt = '';
         }
-         if(sessionAttributes.index == 2){
+         if(sessionAttributes.indexSecurity == 2){
             response.tell("Enjoy your errands!");
         }
 
-        sessionAttributes.index = sessionAttributes.index + 1;
+        sessionAttributes.indexSecurity = sessionAttributes.indexSecurity + 1;
         session.attributes = sessionAttributes;
 
         response.ask(text, reprompt);
@@ -98,28 +99,28 @@ HelloWorld.prototype.intentHandlers = {
  "DeviceCoverageIntent": function (intent, session, response) {
         //response.ask("Your security system will switch to out of home and the presence simulation will be activated. I'll protect your home", "Greeter", "Hello World!");
         var sessionAttributes = session.attributes;
-        console.log("index id dans intent =>" + sessionAttributes.indexs);
-         if(sessionAttributes.indexs == 0){
+        console.log("index id dans intent =>" + sessionAttributes.indexCoverage);
+         if(sessionAttributes.indexCoverage == 0){
             var text = 'Your ipad is covered by your home insurance against fire, water, theft and burglary but only at a discounted value. There is an option to cover it at replacement value';
             var reprompt = '';
         }
-        if(sessionAttributes.indexs == 1){
+        if(sessionAttributes.indexCoverage == 1){
               var text = 'Discounted value takes into account the usage of your iPad and thus that it will be worth less every year. Replacement value means that you will be reimbursed exactly what you would need to be a brand new replacement';
               var reprompt = '';
         }
-        if(sessionAttributes.indexs == 2){
+        if(sessionAttributes.indexCoverage == 2){
               var text = 'The option costs 5 additional euros per year, and it will also increase the coverage of your TV and your iPhone';
               var reprompt = '';
         }
-        if(sessionAttributes.indexs == 3){
+        if(sessionAttributes.indexCoverage == 3){
               var text = 'Sure!......... Your iPad is now fully covered. You will be charged for it at the end of the month';
               var reprompt = '';
         }
-         if(sessionAttributes.indexs == 4){
+         if(sessionAttributes.indexCoverage == 4){
             response.tell("good bye DeviceCoverage");
         }
 
-        sessionAttributes.indexs = sessionAttributes.indexs + 1;
+        sessionAttributes.indexCoverage = sessionAttributes.indexCoverage + 1;
         session.attributes = sessionAttributes;
 
         response.ask(text, reprompt);
@@ -128,6 +129,7 @@ HelloWorld.prototype.intentHandlers = {
     },
 
     "DeactivateSecurityIntent": function (intent, session, response) {
+        // TODO: Switch off presence simulation
         response.tell("Welcome Home!");
      },
 
@@ -136,14 +138,14 @@ HelloWorld.prototype.intentHandlers = {
      },
 
     "AMAZON.HelpIntent": function (intent, session, response) {
-        response.ask("Talk to AXA is here to help you, I can for example protect your home when you are away or tell you if your items are covered.", "How can I help you?");
+        response.ask("Talk to Axe is here to help you, I can for example protect your home when you are away or tell you if your items are covered.", "How can I help you?");
     }
 };
 
 // Create the handler that responds to the Alexa Request.
 exports.handler = function (event, context) {
-    // Create an instance of the HelloWorld skill.
-    var helloWorld = new HelloWorld();
-    helloWorld.execute(event, context);
+    // Create an instance of the Talk2MyHand skill.
+    var Talk2MyHand = new Talk2MyHand();
+    Talk2MyHand.execute(event, context);
 };
 
