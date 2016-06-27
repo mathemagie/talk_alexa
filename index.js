@@ -137,7 +137,8 @@ Talk2MyHand.prototype.intentHandlers = {
         var sessionAttributes = session.attributes;
         console.log("index id dans intent =>" + sessionAttributes.indexFloodingZone);
          if(sessionAttributes.indexFloodingZone == 0){
-            var text = 'Your home in risk mid to high risk zone';
+            sessionAttributes.home = intent.slots.MyHome.value;
+            var text = 'Your ' + sessionAttributes.home + ' in risk mid to high risk zone';
             var reprompt = '';
         }
         if(sessionAttributes.indexFloodingZone == 1){
