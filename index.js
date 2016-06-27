@@ -68,7 +68,7 @@ var optionsKitchen = {
     headers: headers
 };
 
-var lights = ["living room light", "bedroom light", "kitchen light"];
+var lights = ["living room", "bedroom", "kitchen"];
 var optionsArray = [optionsLivingRoom, optionsBedroom, optionsKitchen];
 
 /**
@@ -241,7 +241,7 @@ Talk2MyHand.prototype.intentHandlers = {
     }
 };
 
-function setLightToTurnOn(intent, session, response) {
+function setLightToTurnOn(intent, session, alexaResponse) {
     var cardTitle = intent.name;
     var lightToTurnOn = intent.slots.Light.value;
     var repromptText = "";
@@ -255,15 +255,15 @@ function setLightToTurnOn(intent, session, response) {
     console.log("lightIndex: " + lightIndex);
     
     if ( lightIndex < 0 ) {
-        response.tell("Sorry, I didn't understand. Could you please repeat?");
+        callback.tell("Sorry, I didn't understand. Could you please repeat?");
     }
     else {
-        sendCommandToLight(true, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, response);
+        sendCommandToLight(true, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse);
     }
     
 }
 
-function setLightToTurnOff(intent, session, response) {
+function setLightToTurnOff(intent, session, alexaResponse) {
     var cardTitle = intent.name;
     var lightToTurnOff = intent.slots.Light.value;
     var repromptText = "";
@@ -277,14 +277,14 @@ function setLightToTurnOff(intent, session, response) {
     console.log("lightIndex: " + lightIndex);
     
     if ( lightIndex < 0 ) {
-        response.tell("Sorry, I didn't understand. Could you please repeat?");
+        alexaResponse.tell("Sorry, I didn't understand. Could you please repeat?");
     }
     else {
-        sendCommandToLight(false, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, response);
+        sendCommandToLight(false, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse);
     } 
 }
 
-function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, response) {
+function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse) {
 
     console.log('sendCommandToLight');
     requestData.on = turnOn;
@@ -305,10 +305,10 @@ function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, sp
             console.log("response received");
             console.log(str);
             if ( turnOn ) {
-                response.tell("Ok, I'm turning on the light");
+                alexaResponse.tell("Ok, I'm turning on the light");
             }
             else {
-                response.tell("Ok, I'm turning off the light");
+                alexaResponse.tell("Ok, I'm turning off the light");
             }
             
         });
