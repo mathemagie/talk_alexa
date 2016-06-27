@@ -145,7 +145,7 @@ Talk2MyHand.prototype.intentHandlers = {
 // Create the handler that responds to the Alexa Request.
 exports.handler = function (event, context) {
     // Create an instance of the Talk2MyHand skill.
-    var Talk2MyHand = new Talk2MyHand();
-    Talk2MyHand.execute(event, context);
+    var talk2MyHand = new Talk2MyHand();
+    talk2MyHand.execute(event, context);
 };
 
