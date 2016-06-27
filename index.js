@@ -340,7 +340,7 @@ function switchOnAlarm(sessionAttributes, session, alexaResponse) {
         }
     };
 
-    callPhilipsAPI(option, request, philipsCallback);
+    callPhilipsAPI(option, requestBody, philipsCallback);
 }
 
 function callPhilipsAPI(apiCall, callBody, philipsCallback) {
