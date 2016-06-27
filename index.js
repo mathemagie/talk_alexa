@@ -295,8 +295,7 @@ function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, sp
     
     var callback = function(response) {
         var str = '';
-        
-        console.log("********************");
+    
 
         //another chunk of data has been recieved, so append it to `str`
         response.on('data', function(chunk) {
@@ -309,10 +308,10 @@ function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, sp
             console.log("response received");
             console.log(str);
             if ( turnOn ) {
-                alexaResponse.tell("Ok, I'm turning on the light");
+                alexaResponse.tell("Sure, I'm turning on the light of the "+lights[lightIndex]);
             }
             else {
-                alexaResponse.tell("Ok, I'm turning off the light");
+                alexaResponse.tell("Roger, I'm turning it off");
             }
             
         });
