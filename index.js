@@ -103,11 +103,12 @@ Talk2MyHand.prototype.intentHandlers = {
         var sessionAttributes = session.attributes;
         console.log("index id dans intent =>" + sessionAttributes.indexCoverage);
          if(sessionAttributes.indexCoverage == 0){
-            var text = 'Your ipad is covered by your home insurance against fire, water, theft and burglary but only at a discounted value. There is an option to cover it at replacement value';
+            sessionAttributes.device = intent.slots.MyDevice.value;
+            var text = 'Your ' + sessionAttributes.device + ' is covered by your home insurance against fire, water, theft and burglary but only at a discounted value. There is an option to cover it at replacement value';
             var reprompt = '';
         }
         if(sessionAttributes.indexCoverage == 1){
-              var text = 'Discounted value takes into account the usage of your iPad and thus that it will be worth less every year. Replacement value means that you will be reimbursed exactly what you would need to be a brand new replacement';
+              var text = 'Discounted value takes into account the usage of your ' + sessionAttributes.device + ' and thus that it will be worth less every year. Replacement value means that you will be reimbursed exactly what you would need to be a brand new replacement';
               var reprompt = '';
         }
         if(sessionAttributes.indexCoverage == 2){
@@ -115,7 +116,7 @@ Talk2MyHand.prototype.intentHandlers = {
               var reprompt = '';
         }
         if(sessionAttributes.indexCoverage == 3){
-              var text = 'Sure!......... Your iPad is now fully covered. You will be charged for it at the end of the month';
+              var text = 'Sure!......... Your ' + sessionAttributes.device + ' is now fully covered. You will be charged for it at the end of the month';
               var reprompt = '';
         }
          if(sessionAttributes.indexCoverage == 4){
