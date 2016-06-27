@@ -107,7 +107,15 @@ HelloWorld.prototype.intentHandlers = {
               var text = 'Discounted value takes into account the usage of your iPad and thus that it will be worth less every year. Replacement value means that you will be reimbursed exactly what you would need to be a brand new replacement';
               var reprompt = '';
         }
-         if(sessionAttributes.indexs == 2){
+        if(sessionAttributes.indexs == 2){
+              var text = 'The option costs 5 additional euros per year, and it will also increase the coverage of your TV and your iPhone';
+              var reprompt = '';
+        }
+        if(sessionAttributes.indexs == 3){
+              var text = 'Sure!......... Your iPad is now fully covered. You will be charged for it at the end of the month';
+              var reprompt = '';
+        }
+         if(sessionAttributes.indexs == 4){
             response.tell("good bye DeviceCoverage");
         }
 
