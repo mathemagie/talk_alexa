@@ -225,11 +225,11 @@ Talk2MyHand.prototype.intentHandlers = {
      },
 
      "TurnOn": function(intent, session, response) {
-        setLightToTurnOn(intent, session, callback);
+        setLightToTurnOn(intent, session, response);
     },
 
     "TurnOff": function(intent, session, response) {
-        setLightToTurnOff(intent, session, callback);
+        setLightToTurnOff(intent, session, response);
      },
 
     "StopIntent": function (intent, session, response) {
@@ -241,7 +241,7 @@ Talk2MyHand.prototype.intentHandlers = {
     }
 };
 
-function setLightToTurnOn(intent, session, callback) {
+function setLightToTurnOn(intent, session, response) {
     var cardTitle = intent.name;
     var lightToTurnOn = intent.slots.Light.value;
     var repromptText = "";
@@ -255,19 +255,15 @@ function setLightToTurnOn(intent, session, callback) {
     console.log("lightIndex: " + lightIndex);
     
     if ( lightIndex < 0 ) {
-        speechOutput = "Sorry, I didn't understand";
-        repromptText = "Could you please repeat?";
-        callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+        response.tell("Sorry, I didn't understand. Could you please repeat?");
     }
     else {
-        speechOutput = "Ok, I'm turning on the " + lightToTurnOn;
-        repromptText = "Do you want me to control another light?";
-        sendCommandToLight(true, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, callback);
+        sendCommandToLight(true, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, response);
     }
     
 }
 
-function setLightToTurnOff(intent, session, callback) {
+function setLightToTurnOff(intent, session, response) {
     var cardTitle = intent.name;
     var lightToTurnOff = intent.slots.Light.value;
     var repromptText = "";
@@ -281,18 +277,14 @@ function setLightToTurnOff(intent, session, callback) {
     console.log("lightIndex: " + lightIndex);
     
     if ( lightIndex < 0 ) {
-        speechOutput = "Sorry, I didn't understand";
-        repromptText = "Could you please repeat?";
-        callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+        response.tell("Sorry, I didn't understand. Could you please repeat?");
     }
     else {
-        speechOutput = "Ok, I'm turning off the " + lightToTurnOff;
-        repromptText = "Do you want me to control another light?";
-        sendCommandToLight(false, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, callback);
+        sendCommandToLight(false, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, response);
     } 
 }
 
-function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, callbackFunc) {
+function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, response) {
 
     console.log('sendCommandToLight');
     requestData.on = turnOn;
@@ -312,7 +304,13 @@ function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, sp
         response.on('end', function() {
             console.log("response received");
             console.log(str);
-            callbackFunc(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+            if ( turnOn ) {
+                response.tell("Ok, I'm turning on the light");
+            }
+            else {
+                response.tell("Ok, I'm turning off the light");
+            }
+            
         });
         
         response.on('error', function(err) {
@@ -325,29 +323,6 @@ function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, sp
     console.log("Options: " + JSON.stringify(optionsArray[lightIndex]));
     https.request(optionsArray[lightIndex], callback).end(body);
 
-}
-
-// --------------- Helpers that build all of the responses -----------------------
-
-function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
-    return {
-        outputSpeech: {
-            type: "PlainText",
-            text: output
-        },
-        card: {
-            type: "Simple",
-            title: "SessionSpeechlet - " + title,
-            content: "SessionSpeechlet - " + output
-        },
-        reprompt: {
-            outputSpeech: {
-                type: "PlainText",
-                text: repromptText
-            }
-        },
-        shouldEndSession: shouldEndSession
-    };
 }
 
 // Create the handler that responds to the Alexa Request.
