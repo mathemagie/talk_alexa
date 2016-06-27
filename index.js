@@ -28,6 +28,49 @@ var APP_ID = "amzn1.echo-sdk-ams.app.255b2ec3-7ff5-452a-9a15-ffec0b3c2cfb"; //re
  */
 var AlexaSkill = require('./AlexaSkill');
 
+
+/**
+ * Philips for variable integration
+*/
+var https = require('https');
+ 
+var bridge = "001788fffe27815f";
+ 
+ var requestData = {
+      on: true,
+      effect: "none"
+};
+
+var headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer dbx7Jm9cWYyuHEV6c597dfdowYXd'
+};
+
+
+var optionsLivingRoom = {
+    host: 'api.meethue.com',
+    path: '/v1/bridges/'+bridge+'/lights/2/state',
+    method: 'PUT',
+    headers: headers
+};
+
+var optionsBedroom = {
+    host: 'api.meethue.com',
+    path: '/v1/bridges/'+bridge+'/lights/1/state',
+    method: 'PUT',
+    headers: headers
+};
+
+var optionsKitchen = {
+    host: 'api.meethue.com',
+    path: '/v1/bridges/'+bridge+'/lights/3/state',
+    method: 'PUT',
+    headers: headers
+};
+
+var lights = ["living room", "bedroom", "kitchen"];
+var optionsArray = [optionsLivingRoom, optionsBedroom, optionsKitchen];
+
 /**
  * Talk2MyHand is a child of AlexaSkill.
  * To read more about inheritance in JavaScript, see the link below.
@@ -180,6 +223,19 @@ Talk2MyHand.prototype.intentHandlers = {
         response.tell("Welcome Home!");
      },
 
+
+    "YesIntent": function (intent, session, response) {
+        ActivateSecurityIntent(intent, session, response);
+     },
+
+     "TurnOn": function(intent, session, response) {
+        setLightToTurnOn(intent, session, response);
+    },
+
+    "TurnOff": function(intent, session, response) {
+        setLightToTurnOff(intent, session, response);
+     },
+
     "StopIntent": function (intent, session, response) {
         response.tell("That was my pleasure.");
      },
@@ -188,6 +244,90 @@ Talk2MyHand.prototype.intentHandlers = {
         response.ask("Talk to Axe is here to help you, I can for example protect your home when you are away or tell you if your items are covered.", "How can I help you?");
     }
 };
+
+function setLightToTurnOn(intent, session, alexaResponse) {
+    var cardTitle = intent.name;
+    var lightToTurnOn = intent.slots.Light.value;
+    var repromptText = "";
+    var sessionAttributes = {};
+    var shouldEndSession = false;
+    var speechOutput = "";
+    
+    var lightIndex = lights.indexOf(lightToTurnOn.toLowerCase());
+    
+    console.log("light to turn on: " + lightToTurnOn);
+    console.log("lightIndex: " + lightIndex);
+    
+    if ( lightIndex < 0 ) {
+        callback.tell("Sorry, I didn't understand. Could you please repeat?");
+    }
+    else {
+        sendCommandToLight(true, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse);
+    }
+    
+}
+
+function setLightToTurnOff(intent, session, alexaResponse) {
+    var cardTitle = intent.name;
+    var lightToTurnOff = intent.slots.Light.value;
+    var repromptText = "";
+    var sessionAttributes = {};
+    var shouldEndSession = false;
+    var speechOutput = "";
+    
+     var lightIndex = lights.indexOf(lightToTurnOff.toLowerCase());
+    
+    console.log("light to turn off: " + lightToTurnOff);
+    console.log("lightIndex: " + lightIndex);
+    
+    if ( lightIndex < 0 ) {
+        alexaResponse.tell("Sorry, I didn't understand. Could you please repeat?");
+    }
+    else {
+        sendCommandToLight(false, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse);
+    } 
+}
+
+function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse) {
+
+    console.log('sendCommandToLight');
+    requestData.on = turnOn;
+    
+    var callback = function(response) {
+        var str = '';
+        
+        console.log("********************");
+
+        //another chunk of data has been recieved, so append it to `str`
+        response.on('data', function(chunk) {
+            
+            str += chunk;
+        });
+
+        //the whole response has been recieved, so we just print it out here
+        response.on('end', function() {
+            console.log("response received");
+            console.log(str);
+            if ( turnOn ) {
+                alexaResponse.tell("Ok, I'm turning on the light");
+            }
+            else {
+                alexaResponse.tell("Ok, I'm turning off the light");
+            }
+            
+        });
+        
+        response.on('error', function(err) {
+            // This prints the error message and stack trace to `stderr`.
+            console.error(err.stack);
+        });
+    };
+   
+    var body = JSON.stringify(requestData);
+    console.log("Options: " + JSON.stringify(optionsArray[lightIndex]));
+    https.request(optionsArray[lightIndex], callback).end(body);
+
+}
 
 // Create the handler that responds to the Alexa Request.
 exports.handler = function (event, context) {
