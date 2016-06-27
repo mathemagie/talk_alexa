@@ -48,6 +48,8 @@ Talk2MyHand.prototype.eventHandlers.onSessionStarted = function (sessionStartedR
     var sessionAttributes = {};
    sessionAttributes.indexCoverage = 0;
     sessionAttributes.indexSecurity = 0;
+    sessionAttributes.indexFloodingZone = 0;
+    sessionAttributes.indexFloodingHelp = 0;
    session.attributes = sessionAttributes;
     // any initialization logic goes here
 };
@@ -121,6 +123,48 @@ Talk2MyHand.prototype.intentHandlers = {
         }
 
         sessionAttributes.indexCoverage = sessionAttributes.indexCoverage + 1;
+        session.attributes = sessionAttributes;
+
+        response.ask(text, reprompt);
+
+
+    },
+
+
+    "FloodingZoneIntent": function (intent, session, response) {
+        //response.ask("Your security system will switch to out of home and the presence simulation will be activated. I'll protect your home", "Greeter", "Hello World!");
+        var sessionAttributes = session.attributes;
+        console.log("index id dans intent =>" + sessionAttributes.indexFloodingZone);
+         if(sessionAttributes.indexFloodingZone == 0){
+            var text = 'Your home in risk mid to high risk zone';
+            var reprompt = '';
+        }
+        if(sessionAttributes.indexFloodingZone == 1){
+              response.tell('Sure, I will send you a SMS');
+        }
+
+        sessionAttributes.indexFloodingZone = sessionAttributes.indexFloodingZone + 1;
+        session.attributes = sessionAttributes;
+
+        response.ask(text, reprompt);
+
+
+    },
+
+
+    "FloodingHelpIntent": function (intent, session, response) {
+        //response.ask("Your security system will switch to out of home and the presence simulation will be activated. I'll protect your home", "Greeter", "Hello World!");
+        var sessionAttributes = session.attributes;
+        console.log("index id dans intent =>" + sessionAttributes.indexFloodingHelp);
+         if(sessionAttributes.indexFloodingHelp == 0){
+            var text = 'We can send François tomorrow at 5 pm, there will be a fee of 50 euros, do you want me to confirm?';
+            var reprompt = '';
+        }
+        if(sessionAttributes.indexFloodingHelp == 1){
+              response.tell('Great, you’ll receive the bill in your monthly recap');
+        }
+
+        sessionAttributes.indexFloodingHelp = sessionAttributes.indexFloodingHelp + 1;
         session.attributes = sessionAttributes;
 
         response.ask(text, reprompt);
