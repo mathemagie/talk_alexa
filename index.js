@@ -121,7 +121,7 @@ Talk2MyHand.prototype.intentHandlers = {
         var sessionAttributes = session.attributes;
         console.log("index id dans intent =>" + sessionAttributes.indexSecurity);
          if(sessionAttributes.indexSecurity == 0){
-            var text = 'Your security system will switch to Out Mode in 2 min, do you also want to activate the presence simulation ?';
+            var text = 'I\'m activating your security system, do you also want to activate the presence simulation ?';
             var reprompt = '';
         }
         if(sessionAttributes.indexSecurity == 1){
