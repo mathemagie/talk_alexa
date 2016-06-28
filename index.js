@@ -352,7 +352,7 @@ function switchOnPresenceSimulation(sessionAttributes, session, alexaResponse) {
 
     var requestBody = {
       hue: 46920,
-      alert: true
+      alert: "lselect"
     };
 
     var philipsCallback = function(error) {
