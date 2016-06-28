@@ -350,7 +350,7 @@ function switchOffAlarm(sessionAttributes, session, alexaResponse) {
     }
 
     var requestBody = {
-      on: false;
+      on: false
     };
 
     var philipsCallback = function(error) {
