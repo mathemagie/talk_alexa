@@ -218,7 +218,7 @@ Talk2MyHand.prototype.intentHandlers = {
     },
 
     "DeactivateSecurityIntent": function (intent, session, response) {
-        switchOffAlarm(sessionAttributes, session, response);
+        switchOffAlarm(response);
      },
 
 
@@ -341,7 +341,7 @@ function switchOnAlarm(sessionAttributes, session, alexaResponse) {
     callPhilipsAPI(option, requestBody, philipsCallback);
 }
 
-function switchOffAlarm(sessionAttributes, session, alexaResponse) {
+function switchOffAlarm(alexaResponse) {
     var option = {
         host: 'api.meethue.com',
         path: '/v1/bridges/'+bridge+'/lights/1/state',
