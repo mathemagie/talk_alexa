@@ -186,7 +186,7 @@ Talk2MyHand.prototype.intentHandlers = {
                 type: AlexaSkill.speechOutputType.SSML
 
             };
-            alexaResponse.ask(resp, reprompt);
+            response.ask(resp, reprompt);
         }
          if(sessionAttributes.indexCoverage == 4){
             response.tell("I was really happy to help you.");
