@@ -271,7 +271,17 @@ Talk2MyHand.prototype.intentHandlers = {
 
 function getPriceFromAPI(deviceId, callback){
 
-  var url = "/test/v1/products?q={\"search\":\"ipad\"}";
+  var device = "ipad";
+  switch(deviceId) {
+    case "iPhone":
+        device = "iPhone 6 plus";
+        break;
+    case "smartwatch":
+        device = "Apple watch";
+        break;
+  }
+
+  var url = "/test/v1/products?q={\"search\":\"" + device + "\"}";
 
   var options = {
     hostname: "api.semantics3.com",
