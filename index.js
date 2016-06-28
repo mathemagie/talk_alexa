@@ -218,8 +218,7 @@ Talk2MyHand.prototype.intentHandlers = {
     },
 
     "DeactivateSecurityIntent": function (intent, session, response) {
-        // TODO: Switch off presence simulation
-        response.tell("Welcome Home!");
+        switchOffAlarm(sessionAttributes, session, response);
      },
 
 
@@ -342,6 +341,31 @@ function switchOnAlarm(sessionAttributes, session, alexaResponse) {
     callPhilipsAPI(option, requestBody, philipsCallback);
 }
 
+function switchOffAlarm(sessionAttributes, session, alexaResponse) {
+    var option = {
+        host: 'api.meethue.com',
+        path: '/v1/bridges/'+bridge+'/lights/1/state',
+        method: 'PUT',
+        headers: headers
+    }
+
+    var requestBody = {
+      on: false;
+    };
+
+    var philipsCallback = function(error) {
+        if ( error ) {
+            console.error(err.stack);
+            alexaResponse.tell("Sorry, I couldn't complete the requested action");
+        }
+        else {
+            alexaResponse.tell("Welcome Home!");
+        }
+    };
+
+    callPhilipsAPI(option, requestBody, philipsCallback);
+}
+
 function switchOnPresenceSimulation(sessionAttributes, session, alexaResponse) {
     var option = {
         host: 'api.meethue.com',
@@ -352,7 +376,7 @@ function switchOnPresenceSimulation(sessionAttributes, session, alexaResponse) {
 
     var requestBody = {
       hue: 46920,
-      alert: "lselect"
+      alert: "select"
     };
 
     var philipsCallback = function(error) {
