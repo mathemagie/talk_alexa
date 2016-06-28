@@ -160,7 +160,7 @@ Talk2MyHand.prototype.intentHandlers = {
             var reprompt = '';
         }
         if(sessionAttributes.indexCoverage == 1){
-              var text = 'Discounted value takes into account the usage of your ' + sessionAttributes.device + ' and thus that it will be worth less every year. Replacement value means that you will be reimbursed exactly what you would need to be a brand new replacement';
+              var text = 'Discounted value takes into account the usage of your ' + sessionAttributes.device + ' and thus that it will be worth less every year. Replacement value means that you will be reimbursed exactly what you would need to have a brand new replacement';
               var reprompt = '';
         }
         if(sessionAttributes.indexCoverage == 2){
@@ -248,7 +248,7 @@ Talk2MyHand.prototype.intentHandlers = {
         response.tell("That was my pleasure.");
      },
 
-    "AMAZON.HelpIntent": function (intent, session, response) {
+    "HelpIntent": function (intent, session, response) {
         response.ask("Talk to Axe is here to help you, I can for example protect your home when you are away or tell you if your items are covered.", "How can I help you?");
     }
 };
