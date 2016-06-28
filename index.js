@@ -146,6 +146,11 @@ Talk2MyHand.prototype.intentHandlers = {
         console.log("index id dans intent =>" + sessionAttributes.indexCoverage);
          if(sessionAttributes.indexCoverage == 0){
             sessionAttributes.device = intent.slots.MyDevice.value;
+            /*getPriceFromAPI(intent.slots.MyDevice.value, function(data){
+                    var text = 'price => ' + data.offers[0].price;
+                    var reprompt = '';
+                    response.ask(text, reprompt);
+            });*/
             var text = 'Your ' + sessionAttributes.device + ' is covered by your home insurance against fire, water, theft and burglary but only at a discounted value. There is an option to cover it at replacement value';
             var reprompt = '';
         }
@@ -241,6 +246,34 @@ Talk2MyHand.prototype.intentHandlers = {
     "AMAZON.HelpIntent": function (intent, session, response) {
         response.ask("Talk to Axe is here to help you, I can for example protect your home when you are away or tell you if your items are covered.", "How can I help you?");
     }
+};
+
+function getPriceFromAPI(deviceId, callback){
+
+  var url = "/v1/products/B00NQGP3L6/offers?retailer=amazon";
+
+  var options = {
+    hostname: "api.zinc.io",
+    method: "GET",
+    path: url,//I don't know for some reason i have to use full url as a path
+    auth: '85B7DB3288D6F9FE23A36950' + ':'
+  };
+
+  https.get(options, function(res){
+    var body = '';
+
+    res.on('data', function(data){
+      body += data;
+    });
+
+    res.on('end', function(){
+      var result = JSON.parse(body);
+      callback(result);
+    });
+
+  }).on('error', function(e){
+    console.log('Error: ' + e);
+  });
 };
 
 function setLightToTurnOn(intent, session, alexaResponse) {
