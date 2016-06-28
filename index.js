@@ -325,7 +325,7 @@ function switchOnAlarm(sessionAttributes, session, alexaResponse) {
       transitiontime: 30
     };
 
-    var philipsCallback = function(response) {
+    var philipsCallback = function(error) {
         if ( error ) {
             console.error(err.stack);
             alexaResponse.tell("Sorry, I couldn't complete the requested action");
