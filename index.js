@@ -176,8 +176,17 @@ Talk2MyHand.prototype.intentHandlers = {
               var reprompt = '';
         }
         if(sessionAttributes.indexCoverage == 3){
+            sessionAttributes.indexCoverage = sessionAttributes.indexCoverage + 1;
+            session.attributes = sessionAttributes;
               var text = 'Sure!<break time="1s"/> Your ' + sessionAttributes.device + ' is now fully covered. You will be charged for it at the end of the month';
               var reprompt = '';
+
+            var resp = {
+                speech: "<speak>" + text +  "</speak>",
+                type: AlexaSkill.speechOutputType.SSML
+
+            };
+            alexaResponse.ask(resp);
         }
          if(sessionAttributes.indexCoverage == 4){
             response.tell("I was really happy to help you.");
