@@ -438,7 +438,7 @@ function switchOnPresenceSimulation(sessionAttributes, session, alexaResponse) {
             var mp3 = "https://s3.eu-central-1.amazonaws.com/da-storage/da-storage/pink6.mp3";
             var text = 'The presence simulation is set up. I\'ll protect your home while you\'re away. ';
             var respWithMP3 = {
-                speech: "<speak>" + text +  "<audio src=\""+mp3+"\" />" + "</speak>",
+                speech: "<speak>" + text +  "<break time=\"1s\"/><audio src=\""+mp3+"\" />" + "</speak>",
                 type: AlexaSkill.speechOutputType.SSML
 
             };
