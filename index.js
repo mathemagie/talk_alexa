@@ -147,20 +147,27 @@ Talk2MyHand.prototype.intentHandlers = {
          if(sessionAttributes.indexCoverage == 0){
             sessionAttributes.device = intent.slots.MyDevice.value;
             console.log("getPriceFromAPI");
-            /**getPriceFromAPI(intent.slots.MyDevice.value, function(data){
-                    console.log("I'm in the callback. ");
-                    var text = 'price => ' + data.offers[0].price;
-                    var reprompt = '';
-                    response.ask(text, reprompt);
+            getPriceFromAPI(intent.slots.MyDevice.value, function(data){
+                    sessionAttributes.indexCoverage = sessionAttributes.indexCoverage + 1;
+                    session.attributes = sessionAttributes;
+                    if ( data != null && data.results !== 'undefined' && data.results.length > 0 ) {
+                        var text = 'price => ' + data.results[0].price;
+                        sessionAttributes.price = data.results[0].price;
+                        var reprompt = '';
+                        response.ask(text, reprompt);
+                    }
+                    else {
+                        var text = 'Your ' + sessionAttributes.device + ' is covered by your home insurance against fire, water, theft and burglary but only at a discounted value. There is an option to cover it at replacement value';
+                        var reprompt = '';
+                        sessionAttributes.price = 339.95;
+                        response.ask(text, reprompt);
+                    }
             });
             console.log("call done");
             return;
-            console.log("Text cretion");*/
-            var text = 'Your ' + sessionAttributes.device + ' is covered by your home insurance against fire, water, theft and burglary but only at a discounted value. There is an option to cover it at replacement value';
-            var reprompt = '';
         }
         if(sessionAttributes.indexCoverage == 1){
-              var text = 'Discounted value takes into account the usage of your ' + sessionAttributes.device + ' and thus that it will be worth less every year. Replacement value means that you will be reimbursed exactly what you would need to be a brand new replacement';
+              var text = 'Discounted value takes into account the usage of your ' + sessionAttributes.device + ' and thus that it will be worth less every year. Replacement value means that you will be reimbursed exactly '+sessionAttributes.price+', what you would need to have a brand new replacement';
               var reprompt = '';
         }
         if(sessionAttributes.indexCoverage == 2){
@@ -255,13 +262,15 @@ Talk2MyHand.prototype.intentHandlers = {
 
 function getPriceFromAPI(deviceId, callback){
 
-  var url = "/v1/products/B00NQGP3L6/offers?retailer=amazon";
+  var url = "/test/v1/products?q={\"search\":\"ipad\"}";
 
   var options = {
-    hostname: "api.zinc.io",
+    hostname: "api.semantics3.com",
     method: "GET",
     path: url,//I don't know for some reason i have to use full url as a path
-    auth: '85B7DB3288D6F9FE23A36950' + ':'
+    headers : {
+        "api_key": "SEM33591FCD0473723EF347D83576053B49C"
+    }
   };
 
   https.get(options, function(res){
@@ -277,7 +286,7 @@ function getPriceFromAPI(deviceId, callback){
     });
 
   }).on('error', function(e){
-    console.log('Error: ' + e);
+    callback(null);
   });
 };
 
