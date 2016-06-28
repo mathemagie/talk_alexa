@@ -146,11 +146,16 @@ Talk2MyHand.prototype.intentHandlers = {
         console.log("index id dans intent =>" + sessionAttributes.indexCoverage);
          if(sessionAttributes.indexCoverage == 0){
             sessionAttributes.device = intent.slots.MyDevice.value;
-            /*getPriceFromAPI(intent.slots.MyDevice.value, function(data){
+            console.log("getPriceFromAPI");
+            /**getPriceFromAPI(intent.slots.MyDevice.value, function(data){
+                    console.log("I'm in the callback. ");
                     var text = 'price => ' + data.offers[0].price;
                     var reprompt = '';
                     response.ask(text, reprompt);
-            });*/
+            });
+            console.log("call done");
+            return;
+            console.log("Text cretion");*/
             var text = 'Your ' + sessionAttributes.device + ' is covered by your home insurance against fire, water, theft and burglary but only at a discounted value. There is an option to cover it at replacement value';
             var reprompt = '';
         }
@@ -418,12 +423,18 @@ function switchOnPresenceSimulation(sessionAttributes, session, alexaResponse) {
             alexaResponse.tell("Sorry, I couldn't complete the requested action");
         }
         else {
-            var text = 'The presence simulation is set up. I\'ll protect your home while you\'re away. ';
             var reprompt = '';
             sessionAttributes.indexSecurity = sessionAttributes.indexSecurity + 1;
             session.attributes = sessionAttributes;
+            var mp3 = "https://s3.eu-central-1.amazonaws.com/da-storage/da-storage/pink6.mp3";
+            var text = 'The presence simulation is set up. I\'ll protect your home while you\'re away. ';
+            var respWithMP3 = {
+                speech: "<speak>" + text +  "<audio src=\""+mp3+"\" />" + "</speak>",
+                type: AlexaSkill.speechOutputType.SSML
 
-            alexaResponse.ask(text, reprompt);
+            };
+            
+            alexaResponse.tell(respWithMP3);
         }
     };
 
