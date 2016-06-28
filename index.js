@@ -164,7 +164,7 @@ Talk2MyHand.prototype.intentHandlers = {
               var reprompt = '';
         }
          if(sessionAttributes.indexCoverage == 4){
-            response.tell("good bye DeviceCoverage");
+            response.tell("I was really happy to help you.");
         }
 
         sessionAttributes.indexCoverage = sessionAttributes.indexCoverage + 1;
@@ -331,7 +331,7 @@ function switchOnAlarm(sessionAttributes, session, alexaResponse) {
             alexaResponse.tell("Sorry, I couldn't complete the requested action");
         }
         else {
-            var text = 'I\'m activating your security system, do you also want to activate the presence simulation ?';
+            var text = 'I\'m activating your security system, do you also want to activate the presence simulation?';
             var reprompt = '';
             sessionAttributes.indexSecurity = sessionAttributes.indexSecurity + 1;
             session.attributes = sessionAttributes;
