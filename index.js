@@ -151,15 +151,15 @@ Talk2MyHand.prototype.intentHandlers = {
                     sessionAttributes.indexCoverage = sessionAttributes.indexCoverage + 1;
                     session.attributes = sessionAttributes;
                     if ( data != null && data.results !== 'undefined' && data.results.length > 0 ) {
-                        var text = 'price => ' + data.results[0].price;
-                        sessionAttributes.price = data.results[0].price;
+                        var text = 'Your ' + sessionAttributes.device + ' is covered by your home insurance against fire, water, theft and burglary but only at a discounted value. There is an option to cover it at replacement value';
+                        sessionAttributes.price = parseInt(data.results[0].price);
                         var reprompt = '';
                         response.ask(text, reprompt);
                     }
                     else {
                         var text = 'Your ' + sessionAttributes.device + ' is covered by your home insurance against fire, water, theft and burglary but only at a discounted value. There is an option to cover it at replacement value';
                         var reprompt = '';
-                        sessionAttributes.price = 339.95;
+                        sessionAttributes.price = 339;
                         response.ask(text, reprompt);
                     }
             });
@@ -167,7 +167,7 @@ Talk2MyHand.prototype.intentHandlers = {
             return;
         }
         if(sessionAttributes.indexCoverage == 1){
-              var text = 'Discounted value takes into account the usage of your ' + sessionAttributes.device + ' and thus that it will be worth less every year. Replacement value means that you will be reimbursed exactly '+sessionAttributes.price+', what you would need to have a brand new replacement';
+              var text = 'Discounted value takes into account the usage of your ' + sessionAttributes.device + ' and thus that it will be worth less every year. Replacement value means that you will be reimbursed exactly '+sessionAttributes.price+' euro, what you would need to have a brand new replacement';
               var reprompt = '';
         }
         if(sessionAttributes.indexCoverage == 2){
@@ -293,6 +293,9 @@ function getPriceFromAPI(deviceId, callback){
 function setLightToTurnOn(intent, session, alexaResponse) {
     var cardTitle = intent.name;
     var lightToTurnOn = intent.slots.Light.value;
+    if ( lightToTurnOn == null) {
+        lightToTurnOn = "";
+    }
     var repromptText = "";
     var sessionAttributes = {};
     var shouldEndSession = false;
@@ -304,10 +307,10 @@ function setLightToTurnOn(intent, session, alexaResponse) {
     console.log("lightIndex: " + lightIndex);
     
     if ( lightIndex < 0 ) {
-        callback.tell("Sorry, I didn't understand. Could you please repeat?");
+        sendCommandToLight(true, 0, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse, lightToTurnOn);
     }
     else {
-        sendCommandToLight(true, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse);
+        sendCommandToLight(true, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse, lightToTurnOn);
     }
     
 }
@@ -315,6 +318,9 @@ function setLightToTurnOn(intent, session, alexaResponse) {
 function setLightToTurnOff(intent, session, alexaResponse) {
     var cardTitle = intent.name;
     var lightToTurnOff = intent.slots.Light.value;
+    if ( lightToTurnOff == null) {
+        lightToTurnOff = "";
+    }
     var repromptText = "";
     var sessionAttributes = {};
     var shouldEndSession = false;
@@ -326,14 +332,14 @@ function setLightToTurnOff(intent, session, alexaResponse) {
     console.log("lightIndex: " + lightIndex);
     
     if ( lightIndex < 0 ) {
-        alexaResponse.tell("Sorry, I didn't understand. Could you please repeat?");
+        sendCommandToLight(false, 0, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse, lightToTurnOff);
     }
     else {
-        sendCommandToLight(false, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse);
+        sendCommandToLight(false, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse, lightToTurnOff);
     } 
 }
 
-function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse) {
+function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, speechOutput, repromptText, shouldEndSession, alexaResponse, lightName) {
 
     console.log('sendCommandToLight');
     requestData.on = turnOn;
@@ -345,10 +351,10 @@ function sendCommandToLight(turnOn, lightIndex, sessionAttributes, cardTitle, sp
         }
         else {
             if ( turnOn ) {
-                alexaResponse.tell("Sure, I'm turning on the light of the "+lights[lightIndex]);
+                alexaResponse.tell("Sure, I'm turning on the "+lightName+" light");
             }
             else {
-                alexaResponse.tell("Roger, I'm turning it off");
+                alexaResponse.tell("Roger, I'm turning off the "+lightName+" light");
             }
         }
     }
@@ -438,7 +444,7 @@ function switchOnPresenceSimulation(sessionAttributes, session, alexaResponse) {
             var mp3 = "https://s3.eu-central-1.amazonaws.com/da-storage/da-storage/pink6.mp3";
             var text = 'The presence simulation is set up. I\'ll protect your home while you\'re away. ';
             var respWithMP3 = {
-                speech: "<speak>" + text +  "<break time=\"1s\"/><audio src=\""+mp3+"\" />" + "</speak>",
+                speech: "<speak>" + text +  "<break time=\"2s\"/><audio src=\""+mp3+"\" />" + "</speak>",
                 type: AlexaSkill.speechOutputType.SSML
 
             };
