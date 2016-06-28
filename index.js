@@ -169,7 +169,7 @@ Talk2MyHand.prototype.intentHandlers = {
               var reprompt = '';
         }
         if(sessionAttributes.indexCoverage == 3){
-              var text = 'Sure!......... Your ' + sessionAttributes.device + ' is now fully covered. You will be charged for it at the end of the month';
+              var text = 'Sure!<break time="1s"/> Your ' + sessionAttributes.device + ' is now fully covered. You will be charged for it at the end of the month';
               var reprompt = '';
         }
          if(sessionAttributes.indexCoverage == 4){
