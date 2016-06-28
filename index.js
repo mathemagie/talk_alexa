@@ -274,10 +274,10 @@ function getPriceFromAPI(deviceId, callback){
   var device = "ipad";
   switch(deviceId) {
     case "iPhone":
-        device = "iPhone 6 plus";
+        device = "iPhone%206%20plus";
         break;
     case "smartwatch":
-        device = "Apple watch";
+        device = "Apple%20watch";
         break;
   }
 
